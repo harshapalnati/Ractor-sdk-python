@@ -26,7 +26,7 @@ class VersionResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/ractorlabs-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/harshapalnati/Ractor-sdk-python#accessing-raw-response-data-eg-headers
         """
         return VersionResourceWithRawResponse(self)
 
@@ -35,7 +35,7 @@ class VersionResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/ractorlabs-python#with_streaming_response
+        For more information, see https://www.github.com/harshapalnati/Ractor-sdk-python#with_streaming_response
         """
         return VersionResourceWithStreamingResponse(self)
 
@@ -66,7 +66,7 @@ class AsyncVersionResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/ractorlabs-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/harshapalnati/Ractor-sdk-python#accessing-raw-response-data-eg-headers
         """
         return AsyncVersionResourceWithRawResponse(self)
 
@@ -75,7 +75,7 @@ class AsyncVersionResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/ractorlabs-python#with_streaming_response
+        For more information, see https://www.github.com/harshapalnati/Ractor-sdk-python#with_streaming_response
         """
         return AsyncVersionResourceWithStreamingResponse(self)
 
