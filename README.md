@@ -83,6 +83,7 @@ pip install ractorlabs[aiohttp]
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
 
 ```python
+import os
 import asyncio
 from ractorlabs import DefaultAioHttpClient
 from ractorlabs import AsyncRactorlabs
@@ -90,7 +91,7 @@ from ractorlabs import AsyncRactorlabs
 
 async def main() -> None:
     async with AsyncRactorlabs(
-        api_key="My API Key",
+        api_key=os.environ.get("RACTORLABS_API_KEY"),  # This is the default and can be omitted
         http_client=DefaultAioHttpClient(),
     ) as client:
         version = await client.version.retrieve()
