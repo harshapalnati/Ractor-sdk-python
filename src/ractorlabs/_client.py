@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, Mapping, cast
+from typing import TYPE_CHECKING, Any, Dict, Mapping, cast
 from typing_extensions import Self, Literal, override
 
 import httpx
@@ -20,8 +20,8 @@ from ._types import (
     not_given,
 )
 from ._utils import is_given, get_async_library
+from ._compat import cached_property
 from ._version import __version__
-from .resources import auth, version, blocklist, operators, responses
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
 from ._exceptions import APIStatusError, RactorlabsError
 from ._base_client import (
@@ -29,8 +29,16 @@ from ._base_client import (
     SyncAPIClient,
     AsyncAPIClient,
 )
-from .resources.sessions import sessions
-from .resources.published import published
+
+if TYPE_CHECKING:
+    from .resources import auth, version, sessions, blocklist, operators, published, responses
+    from .resources.auth import AuthResource, AsyncAuthResource
+    from .resources.version import VersionResource, AsyncVersionResource
+    from .resources.blocklist import BlocklistResource, AsyncBlocklistResource
+    from .resources.operators import OperatorsResource, AsyncOperatorsResource
+    from .resources.responses import ResponsesResource, AsyncResponsesResource
+    from .resources.sessions.sessions import SessionsResource, AsyncSessionsResource
+    from .resources.published.published import PublishedResource, AsyncPublishedResource
 
 __all__ = [
     "ENVIRONMENTS",
@@ -51,16 +59,6 @@ ENVIRONMENTS: Dict[str, str] = {
 
 
 class Ractorlabs(SyncAPIClient):
-    version: version.VersionResource
-    operators: operators.OperatorsResource
-    published: published.PublishedResource
-    auth: auth.AuthResource
-    blocklist: blocklist.BlocklistResource
-    sessions: sessions.SessionsResource
-    responses: responses.ResponsesResource
-    with_raw_response: RactorlabsWithRawResponse
-    with_streaming_response: RactorlabsWithStreamedResponse
-
     # client options
     api_key: str
     host: str
@@ -147,15 +145,55 @@ class Ractorlabs(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.version = version.VersionResource(self)
-        self.operators = operators.OperatorsResource(self)
-        self.published = published.PublishedResource(self)
-        self.auth = auth.AuthResource(self)
-        self.blocklist = blocklist.BlocklistResource(self)
-        self.sessions = sessions.SessionsResource(self)
-        self.responses = responses.ResponsesResource(self)
-        self.with_raw_response = RactorlabsWithRawResponse(self)
-        self.with_streaming_response = RactorlabsWithStreamedResponse(self)
+    @cached_property
+    def version(self) -> VersionResource:
+        from .resources.version import VersionResource
+
+        return VersionResource(self)
+
+    @cached_property
+    def operators(self) -> OperatorsResource:
+        from .resources.operators import OperatorsResource
+
+        return OperatorsResource(self)
+
+    @cached_property
+    def published(self) -> PublishedResource:
+        from .resources.published import PublishedResource
+
+        return PublishedResource(self)
+
+    @cached_property
+    def auth(self) -> AuthResource:
+        from .resources.auth import AuthResource
+
+        return AuthResource(self)
+
+    @cached_property
+    def blocklist(self) -> BlocklistResource:
+        from .resources.blocklist import BlocklistResource
+
+        return BlocklistResource(self)
+
+    @cached_property
+    def sessions(self) -> SessionsResource:
+        from .resources.sessions import SessionsResource
+
+        return SessionsResource(self)
+
+    @cached_property
+    def responses(self) -> ResponsesResource:
+        from .resources.responses import ResponsesResource
+
+        return ResponsesResource(self)
+
+    @cached_property
+    def with_raw_response(self) -> RactorlabsWithRawResponse:
+        return RactorlabsWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> RactorlabsWithStreamedResponse:
+        return RactorlabsWithStreamedResponse(self)
 
     @property
     @override
@@ -267,16 +305,6 @@ class Ractorlabs(SyncAPIClient):
 
 
 class AsyncRactorlabs(AsyncAPIClient):
-    version: version.AsyncVersionResource
-    operators: operators.AsyncOperatorsResource
-    published: published.AsyncPublishedResource
-    auth: auth.AsyncAuthResource
-    blocklist: blocklist.AsyncBlocklistResource
-    sessions: sessions.AsyncSessionsResource
-    responses: responses.AsyncResponsesResource
-    with_raw_response: AsyncRactorlabsWithRawResponse
-    with_streaming_response: AsyncRactorlabsWithStreamedResponse
-
     # client options
     api_key: str
     host: str
@@ -363,15 +391,55 @@ class AsyncRactorlabs(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.version = version.AsyncVersionResource(self)
-        self.operators = operators.AsyncOperatorsResource(self)
-        self.published = published.AsyncPublishedResource(self)
-        self.auth = auth.AsyncAuthResource(self)
-        self.blocklist = blocklist.AsyncBlocklistResource(self)
-        self.sessions = sessions.AsyncSessionsResource(self)
-        self.responses = responses.AsyncResponsesResource(self)
-        self.with_raw_response = AsyncRactorlabsWithRawResponse(self)
-        self.with_streaming_response = AsyncRactorlabsWithStreamedResponse(self)
+    @cached_property
+    def version(self) -> AsyncVersionResource:
+        from .resources.version import AsyncVersionResource
+
+        return AsyncVersionResource(self)
+
+    @cached_property
+    def operators(self) -> AsyncOperatorsResource:
+        from .resources.operators import AsyncOperatorsResource
+
+        return AsyncOperatorsResource(self)
+
+    @cached_property
+    def published(self) -> AsyncPublishedResource:
+        from .resources.published import AsyncPublishedResource
+
+        return AsyncPublishedResource(self)
+
+    @cached_property
+    def auth(self) -> AsyncAuthResource:
+        from .resources.auth import AsyncAuthResource
+
+        return AsyncAuthResource(self)
+
+    @cached_property
+    def blocklist(self) -> AsyncBlocklistResource:
+        from .resources.blocklist import AsyncBlocklistResource
+
+        return AsyncBlocklistResource(self)
+
+    @cached_property
+    def sessions(self) -> AsyncSessionsResource:
+        from .resources.sessions import AsyncSessionsResource
+
+        return AsyncSessionsResource(self)
+
+    @cached_property
+    def responses(self) -> AsyncResponsesResource:
+        from .resources.responses import AsyncResponsesResource
+
+        return AsyncResponsesResource(self)
+
+    @cached_property
+    def with_raw_response(self) -> AsyncRactorlabsWithRawResponse:
+        return AsyncRactorlabsWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> AsyncRactorlabsWithStreamedResponse:
+        return AsyncRactorlabsWithStreamedResponse(self)
 
     @property
     @override
@@ -483,47 +551,199 @@ class AsyncRactorlabs(AsyncAPIClient):
 
 
 class RactorlabsWithRawResponse:
+    _client: Ractorlabs
+
     def __init__(self, client: Ractorlabs) -> None:
-        self.version = version.VersionResourceWithRawResponse(client.version)
-        self.operators = operators.OperatorsResourceWithRawResponse(client.operators)
-        self.published = published.PublishedResourceWithRawResponse(client.published)
-        self.auth = auth.AuthResourceWithRawResponse(client.auth)
-        self.blocklist = blocklist.BlocklistResourceWithRawResponse(client.blocklist)
-        self.sessions = sessions.SessionsResourceWithRawResponse(client.sessions)
-        self.responses = responses.ResponsesResourceWithRawResponse(client.responses)
+        self._client = client
+
+    @cached_property
+    def version(self) -> version.VersionResourceWithRawResponse:
+        from .resources.version import VersionResourceWithRawResponse
+
+        return VersionResourceWithRawResponse(self._client.version)
+
+    @cached_property
+    def operators(self) -> operators.OperatorsResourceWithRawResponse:
+        from .resources.operators import OperatorsResourceWithRawResponse
+
+        return OperatorsResourceWithRawResponse(self._client.operators)
+
+    @cached_property
+    def published(self) -> published.PublishedResourceWithRawResponse:
+        from .resources.published import PublishedResourceWithRawResponse
+
+        return PublishedResourceWithRawResponse(self._client.published)
+
+    @cached_property
+    def auth(self) -> auth.AuthResourceWithRawResponse:
+        from .resources.auth import AuthResourceWithRawResponse
+
+        return AuthResourceWithRawResponse(self._client.auth)
+
+    @cached_property
+    def blocklist(self) -> blocklist.BlocklistResourceWithRawResponse:
+        from .resources.blocklist import BlocklistResourceWithRawResponse
+
+        return BlocklistResourceWithRawResponse(self._client.blocklist)
+
+    @cached_property
+    def sessions(self) -> sessions.SessionsResourceWithRawResponse:
+        from .resources.sessions import SessionsResourceWithRawResponse
+
+        return SessionsResourceWithRawResponse(self._client.sessions)
+
+    @cached_property
+    def responses(self) -> responses.ResponsesResourceWithRawResponse:
+        from .resources.responses import ResponsesResourceWithRawResponse
+
+        return ResponsesResourceWithRawResponse(self._client.responses)
 
 
 class AsyncRactorlabsWithRawResponse:
+    _client: AsyncRactorlabs
+
     def __init__(self, client: AsyncRactorlabs) -> None:
-        self.version = version.AsyncVersionResourceWithRawResponse(client.version)
-        self.operators = operators.AsyncOperatorsResourceWithRawResponse(client.operators)
-        self.published = published.AsyncPublishedResourceWithRawResponse(client.published)
-        self.auth = auth.AsyncAuthResourceWithRawResponse(client.auth)
-        self.blocklist = blocklist.AsyncBlocklistResourceWithRawResponse(client.blocklist)
-        self.sessions = sessions.AsyncSessionsResourceWithRawResponse(client.sessions)
-        self.responses = responses.AsyncResponsesResourceWithRawResponse(client.responses)
+        self._client = client
+
+    @cached_property
+    def version(self) -> version.AsyncVersionResourceWithRawResponse:
+        from .resources.version import AsyncVersionResourceWithRawResponse
+
+        return AsyncVersionResourceWithRawResponse(self._client.version)
+
+    @cached_property
+    def operators(self) -> operators.AsyncOperatorsResourceWithRawResponse:
+        from .resources.operators import AsyncOperatorsResourceWithRawResponse
+
+        return AsyncOperatorsResourceWithRawResponse(self._client.operators)
+
+    @cached_property
+    def published(self) -> published.AsyncPublishedResourceWithRawResponse:
+        from .resources.published import AsyncPublishedResourceWithRawResponse
+
+        return AsyncPublishedResourceWithRawResponse(self._client.published)
+
+    @cached_property
+    def auth(self) -> auth.AsyncAuthResourceWithRawResponse:
+        from .resources.auth import AsyncAuthResourceWithRawResponse
+
+        return AsyncAuthResourceWithRawResponse(self._client.auth)
+
+    @cached_property
+    def blocklist(self) -> blocklist.AsyncBlocklistResourceWithRawResponse:
+        from .resources.blocklist import AsyncBlocklistResourceWithRawResponse
+
+        return AsyncBlocklistResourceWithRawResponse(self._client.blocklist)
+
+    @cached_property
+    def sessions(self) -> sessions.AsyncSessionsResourceWithRawResponse:
+        from .resources.sessions import AsyncSessionsResourceWithRawResponse
+
+        return AsyncSessionsResourceWithRawResponse(self._client.sessions)
+
+    @cached_property
+    def responses(self) -> responses.AsyncResponsesResourceWithRawResponse:
+        from .resources.responses import AsyncResponsesResourceWithRawResponse
+
+        return AsyncResponsesResourceWithRawResponse(self._client.responses)
 
 
 class RactorlabsWithStreamedResponse:
+    _client: Ractorlabs
+
     def __init__(self, client: Ractorlabs) -> None:
-        self.version = version.VersionResourceWithStreamingResponse(client.version)
-        self.operators = operators.OperatorsResourceWithStreamingResponse(client.operators)
-        self.published = published.PublishedResourceWithStreamingResponse(client.published)
-        self.auth = auth.AuthResourceWithStreamingResponse(client.auth)
-        self.blocklist = blocklist.BlocklistResourceWithStreamingResponse(client.blocklist)
-        self.sessions = sessions.SessionsResourceWithStreamingResponse(client.sessions)
-        self.responses = responses.ResponsesResourceWithStreamingResponse(client.responses)
+        self._client = client
+
+    @cached_property
+    def version(self) -> version.VersionResourceWithStreamingResponse:
+        from .resources.version import VersionResourceWithStreamingResponse
+
+        return VersionResourceWithStreamingResponse(self._client.version)
+
+    @cached_property
+    def operators(self) -> operators.OperatorsResourceWithStreamingResponse:
+        from .resources.operators import OperatorsResourceWithStreamingResponse
+
+        return OperatorsResourceWithStreamingResponse(self._client.operators)
+
+    @cached_property
+    def published(self) -> published.PublishedResourceWithStreamingResponse:
+        from .resources.published import PublishedResourceWithStreamingResponse
+
+        return PublishedResourceWithStreamingResponse(self._client.published)
+
+    @cached_property
+    def auth(self) -> auth.AuthResourceWithStreamingResponse:
+        from .resources.auth import AuthResourceWithStreamingResponse
+
+        return AuthResourceWithStreamingResponse(self._client.auth)
+
+    @cached_property
+    def blocklist(self) -> blocklist.BlocklistResourceWithStreamingResponse:
+        from .resources.blocklist import BlocklistResourceWithStreamingResponse
+
+        return BlocklistResourceWithStreamingResponse(self._client.blocklist)
+
+    @cached_property
+    def sessions(self) -> sessions.SessionsResourceWithStreamingResponse:
+        from .resources.sessions import SessionsResourceWithStreamingResponse
+
+        return SessionsResourceWithStreamingResponse(self._client.sessions)
+
+    @cached_property
+    def responses(self) -> responses.ResponsesResourceWithStreamingResponse:
+        from .resources.responses import ResponsesResourceWithStreamingResponse
+
+        return ResponsesResourceWithStreamingResponse(self._client.responses)
 
 
 class AsyncRactorlabsWithStreamedResponse:
+    _client: AsyncRactorlabs
+
     def __init__(self, client: AsyncRactorlabs) -> None:
-        self.version = version.AsyncVersionResourceWithStreamingResponse(client.version)
-        self.operators = operators.AsyncOperatorsResourceWithStreamingResponse(client.operators)
-        self.published = published.AsyncPublishedResourceWithStreamingResponse(client.published)
-        self.auth = auth.AsyncAuthResourceWithStreamingResponse(client.auth)
-        self.blocklist = blocklist.AsyncBlocklistResourceWithStreamingResponse(client.blocklist)
-        self.sessions = sessions.AsyncSessionsResourceWithStreamingResponse(client.sessions)
-        self.responses = responses.AsyncResponsesResourceWithStreamingResponse(client.responses)
+        self._client = client
+
+    @cached_property
+    def version(self) -> version.AsyncVersionResourceWithStreamingResponse:
+        from .resources.version import AsyncVersionResourceWithStreamingResponse
+
+        return AsyncVersionResourceWithStreamingResponse(self._client.version)
+
+    @cached_property
+    def operators(self) -> operators.AsyncOperatorsResourceWithStreamingResponse:
+        from .resources.operators import AsyncOperatorsResourceWithStreamingResponse
+
+        return AsyncOperatorsResourceWithStreamingResponse(self._client.operators)
+
+    @cached_property
+    def published(self) -> published.AsyncPublishedResourceWithStreamingResponse:
+        from .resources.published import AsyncPublishedResourceWithStreamingResponse
+
+        return AsyncPublishedResourceWithStreamingResponse(self._client.published)
+
+    @cached_property
+    def auth(self) -> auth.AsyncAuthResourceWithStreamingResponse:
+        from .resources.auth import AsyncAuthResourceWithStreamingResponse
+
+        return AsyncAuthResourceWithStreamingResponse(self._client.auth)
+
+    @cached_property
+    def blocklist(self) -> blocklist.AsyncBlocklistResourceWithStreamingResponse:
+        from .resources.blocklist import AsyncBlocklistResourceWithStreamingResponse
+
+        return AsyncBlocklistResourceWithStreamingResponse(self._client.blocklist)
+
+    @cached_property
+    def sessions(self) -> sessions.AsyncSessionsResourceWithStreamingResponse:
+        from .resources.sessions import AsyncSessionsResourceWithStreamingResponse
+
+        return AsyncSessionsResourceWithStreamingResponse(self._client.sessions)
+
+    @cached_property
+    def responses(self) -> responses.AsyncResponsesResourceWithStreamingResponse:
+        from .resources.responses import AsyncResponsesResourceWithStreamingResponse
+
+        return AsyncResponsesResourceWithStreamingResponse(self._client.responses)
 
 
 Client = Ractorlabs
